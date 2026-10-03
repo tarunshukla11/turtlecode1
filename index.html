@@ -66,10 +66,11 @@
     }
     .container {
       width: 100%;
-      max-width: 1050px;
+      max-width: 1080px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      margin: 0 auto;
     }
     .controls-card {
       background: var(--card-bg);
@@ -155,34 +156,35 @@
       width: 100%;
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
       position: relative;
       overflow: hidden;
-      padding: 10px;
-      min-height: 870px;
-      transition: min-height 0.2s ease;
+      margin: 0 auto;
+      height: 800px;
+      transition: height 0.2s ease;
     }
     .canvas-wrapper:fullscreen {
       background: #ffffff;
-      padding: 20px;
+      padding: 0;
       border-radius: 0;
       display: flex;
       justify-content: center;
       align-items: center;
     }
     #turtle-canvas-box {
-      width: 900px;
-      height: 850px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transform-origin: center center;
+      width: 1000px;
+      height: 800px;
+      position: relative;
+      margin: 0 auto;
+      transform-origin: top center;
       transition: transform 0.15s ease-out;
     }
     #turtle-canvas-box canvas {
       display: block !important;
-      background: #ffffff !important;
-      border-radius: 12px;
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      background: transparent !important;
     }
     .code-modal {
       display: none;
@@ -258,6 +260,7 @@
 import turtle
 
 
+OFFSET_X = 96
 OFFSET_Y = -50
 
 
@@ -276,12 +279,12 @@ class Draw_Pikachu:
         t.speed(9)
         t.ondrag(setup)
         t.penup()
-        t.goto(0, OFFSET_Y)
+        t.goto(OFFSET_X, OFFSET_Y)
         t.pendown()
 
     def meme(self, x, y):
         self.t.penup()
-        self.t.goto(x, y + OFFSET_Y)
+        self.t.goto(x + OFFSET_X, y + OFFSET_Y)
         self.t.pendown()
 
     def aankha1(self, x, y):
@@ -795,7 +798,7 @@ class Draw_Pikachu:
 def main():
     print('Painting the Cartoon... ')
     try:
-        turtle.screensize(800, 600)
+        turtle.screensize(1000, 800)
     except (AttributeError, Exception):
         pass
     turtle.title('Cartoon')
@@ -820,9 +823,9 @@ if __name__ == '__main__':
       const box = document.getElementById("turtle-canvas-box");
       if (!wrapper || !box) return;
 
-      const availWidth = wrapper.clientWidth - 20;
-      const baseWidth = 900;
-      const baseHeight = 850;
+      const availWidth = wrapper.clientWidth;
+      const baseWidth = 1000;
+      const baseHeight = 800;
 
       let fitScale = 1.0;
       if (availWidth < baseWidth) {
@@ -831,7 +834,7 @@ if __name__ == '__main__':
 
       const totalScale = fitScale * currentZoom;
       box.style.transform = "scale(" + totalScale + ")";
-      wrapper.style.minHeight = Math.round(baseHeight * totalScale + 20) + "px";
+      wrapper.style.height = Math.round(baseHeight * totalScale) + "px";
     }
 
     window.addEventListener("resize", autoScaleCanvas);
@@ -871,8 +874,8 @@ if __name__ == '__main__':
 
       Sk.TurtleGraphics = {
         target: "turtle-canvas-box",
-        width: 900,
-        height: 850,
+        width: 1000,
+        height: 800,
         animate: true
       };
 
@@ -904,7 +907,7 @@ if __name__ == '__main__':
     });
 
     document.getElementById("btn-zoom-in").addEventListener("click", function() {
-      currentZoom = Math.min(1.5, currentZoom + 0.1);
+      currentZoom = Math.min(1.6, currentZoom + 0.1);
       autoScaleCanvas();
     });
 
@@ -936,14 +939,26 @@ if __name__ == '__main__':
     });
 
     document.getElementById("btn-download").addEventListener("click", function() {
-      const canvas = document.querySelector("#turtle-canvas-box canvas");
-      if (!canvas) {
+      // Find all canvases inside turtle-canvas-box and combine them onto one export canvas
+      const canvases = document.querySelectorAll("#turtle-canvas-box canvas");
+      if (!canvases || canvases.length === 0) {
         alert("The canvas is still loading. Please wait a moment.");
         return;
       }
+      const exportCanvas = document.createElement("canvas");
+      exportCanvas.width = 1000;
+      exportCanvas.height = 800;
+      const ctx = exportCanvas.getContext("2d");
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, 1000, 800);
+      canvases.forEach(c => {
+        if (c.style.display !== "none") {
+          ctx.drawImage(c, 0, 0);
+        }
+      });
       const link = document.createElement("a");
       link.download = "pikachu-python-turtle.png";
-      link.href = canvas.toDataURL("image/png");
+      link.href = exportCanvas.toDataURL("image/png");
       link.click();
     });
 
