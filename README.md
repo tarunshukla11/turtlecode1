@@ -8,8 +8,8 @@ You can run this project locally with standard Python or host it on **GitHub Pag
 
 ## 🌐 Live Interactive Demo
 
-> 🔗 **Replace with your link after enabling GitHub Pages:**  
-> **[👉 Click Here to Watch Pikachu Draw Live in Your Browser!](https://YOUR-USERNAME.github.io/YOUR-REPO-NAME/)**
+> 🔗 **Live Web Demo Link:**  
+> **[👉 Click Here to Watch Pikachu Draw Live in Your Browser!](https://tarunshukla11.github.io/turtlecode1/)**
 
 - **Instant Drawing**: Starts animating Pikachu the moment the link is opened.
 - **Controls**: Includes ⚡ Fast Mode, 🔄 Replay, 📜 View Code, and 💾 Save PNG.
@@ -57,8 +57,8 @@ git commit -m "Initial commit: Pikachu Turtle Art with Web Runner"
 # Rename default branch to main
 git branch -M main
 
-# Link to your GitHub repository (replace with YOUR repository URL)
-git remote add origin https://github.com/YOUR-USERNAME/YOUR-REPO-NAME.git
+# Link to your GitHub repository
+git remote add origin https://github.com/tarunshukla11/turtlecode1.git
 
 # Push code to GitHub
 git push -u origin main
@@ -72,9 +72,9 @@ git push -u origin main
    - Leave the folder as **`/ (root)`**.
    - Click **Save**.
 4. Wait about 1 minute and refresh the page.
-5. GitHub will give you a public URL like:
+5. GitHub will give you your public live link:
    ```
-   https://YOUR-USERNAME.github.io/YOUR-REPO-NAME/
+   https://tarunshukla11.github.io/turtlecode1/
    ```
 
 ### Step 4: Share the Link!
