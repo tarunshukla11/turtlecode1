@@ -1,129 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pikachu — Python Turtle Art</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pikachu — Python Turtle</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=JetBrains+Mono&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
   <style>
     :root {
-      --accent-yellow: #facc15;
-      --card-bg: rgba(18, 24, 38, 0.90);
-      --card-border: rgba(255,255,255,0.12);
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
+      --yellow: #facc15;
+      --card: rgba(18,24,38,0.90);
+      --border: rgba(255,255,255,0.12);
+      --txt: #f8fafc;
+      --muted: #94a3b8;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: "Outfit", sans-serif;
+      font-family: Outfit, sans-serif;
       background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #090d16 100%);
-      color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px 16px 40px;
+      min-height: 100vh; color: var(--txt);
+      display: flex; flex-direction: column;
+      align-items: center; padding: 20px 16px 40px;
     }
     header { text-align: center; margin-bottom: 16px; }
     .badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(250,204,21,0.12); color: var(--accent-yellow);
-      border: 1px solid rgba(250,204,21,0.35);
-      padding: 5px 16px; border-radius: 999px;
-      font-size: 0.8rem; font-weight: 700; letter-spacing: 0.5px;
+      display: inline-block; background: rgba(250,204,21,.12);
+      color: var(--yellow); border: 1px solid rgba(250,204,21,.35);
+      padding: 4px 14px; border-radius: 999px;
+      font-size: .78rem; font-weight: 700; letter-spacing: .5px;
       text-transform: uppercase; margin-bottom: 8px;
     }
     h1 {
-      font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 800;
-      background: linear-gradient(135deg, #fef08a 0%, #facc15 50%, #f97316 100%);
+      font-size: clamp(2rem,4vw,2.8rem); font-weight: 800;
+      background: linear-gradient(135deg,#fef08a,#facc15,#f97316);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      letter-spacing: -0.5px; line-height: 1.15;
     }
-    .subtitle { color: var(--text-muted); font-size: 1rem; margin-top: 6px; }
+    .sub { color: var(--muted); font-size: .98rem; margin-top: 4px; }
 
-    .container { width: 100%; max-width: 1200px; display: flex; flex-direction: column; align-items: center; }
+    .wrap { width: 100%; max-width: 1160px; }
 
-    /* Controls bar */
-    .controls-card {
-      background: var(--card-bg); border: 1px solid var(--card-border);
-      backdrop-filter: blur(16px); border-radius: 16px;
-      padding: 12px 20px; width: 100%;
-      display: flex; flex-wrap: wrap; align-items: center;
-      justify-content: space-between; gap: 10px;
-      margin-bottom: 14px; box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+    .ctrl {
+      background: var(--card); border: 1px solid var(--border);
+      backdrop-filter: blur(16px); border-radius: 14px;
+      padding: 12px 20px; display: flex; flex-wrap: wrap;
+      align-items: center; justify-content: space-between; gap: 10px;
+      margin-bottom: 14px; box-shadow: 0 12px 30px rgba(0,0,0,.4);
     }
-    .status-group { display: flex; align-items: center; gap: 10px; }
+    .status { display: flex; align-items: center; gap: 10px; }
     .dot {
       width: 11px; height: 11px; border-radius: 50%;
       background: #eab308; box-shadow: 0 0 10px #eab308;
       animation: pulse 1.4s infinite;
     }
     .dot.done { background: #22c55e; box-shadow: 0 0 10px #22c55e; animation: none; }
-    @keyframes pulse {
-      0%,100% { opacity:1; transform:scale(1); }
-      50% { opacity:0.4; transform:scale(0.85); }
-    }
-    .status-text { font-size: 0.92rem; font-weight: 600; }
-    .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.85)} }
+    .stxt { font-size: .9rem; font-weight: 600; }
+    .btns { display: flex; gap: 8px; flex-wrap: wrap; }
     button {
-      font-family: inherit; background: rgba(255,255,255,0.08);
-      border: 1px solid var(--card-border); color: var(--text-main);
-      padding: 7px 13px; border-radius: 9px; font-size: 0.85rem; font-weight: 600;
-      cursor: pointer; display: inline-flex; align-items: center; gap: 5px;
-      transition: all 0.2s;
+      font-family: inherit; padding: 7px 13px; border-radius: 9px;
+      font-size: .85rem; font-weight: 600; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(255,255,255,.08); border: 1px solid var(--border);
+      color: var(--txt); transition: all .2s;
     }
-    button:hover { background: rgba(255,255,255,0.16); transform: translateY(-2px); }
-    button.primary {
-      background: linear-gradient(135deg, #facc15, #eab308);
+    button:hover { background: rgba(255,255,255,.16); transform: translateY(-2px); }
+    button.pri {
+      background: linear-gradient(135deg,#facc15,#eab308);
       color: #0b0f19; border: none;
-      box-shadow: 0 4px 14px rgba(250,204,21,0.35);
+      box-shadow: 0 4px 14px rgba(250,204,21,.35);
     }
-    button.primary:hover { box-shadow: 0 6px 20px rgba(250,204,21,0.5); }
+    button.pri:hover { box-shadow: 0 6px 20px rgba(250,204,21,.5); }
 
-    /* Canvas card — white box that fits the canvas */
-    .canvas-card {
+    /* ──────────────────────────────────────────────
+       CANVAS CARD
+       The card clips to the natural size of #tbox.
+       #tbox is exactly CW x CH via inline style set by JS.
+       Skulpt renders its canvas layers using:
+         layer 1: position:relative; display:block; margin-top:0
+         layer 2: position:relative; display:block; margin-top:-CH
+       We must NOT override those properties.
+    ────────────────────────────────────────────── */
+    .card {
       background: #fff;
-      border-radius: 20px;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.65), 0 0 0 1px rgba(255,255,255,0.15);
+      border-radius: 18px;
+      box-shadow: 0 24px 56px rgba(0,0,0,.65), 0 0 0 1px rgba(255,255,255,.14);
       width: 100%;
-      overflow: hidden;
-      /* Height will be set by JS after we know the scale */
+      overflow: hidden;        /* clips to canvas size */
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
     }
-
-    /* The turtle render target — fixed at native size,
-       then scaled down by JS to fit the card */
-    #turtle-canvas-box {
-      width: 1140px;
-      height: 720px;
-      flex-shrink: 0;
+    /* The scaler div shrinks the native canvas to fit the screen */
+    #scaler {
       transform-origin: top left;
+      /* width/height set in JS to CW x CH so the card sizes itself */
     }
-    /* Make every skulpt canvas layer sit on top of each other */
-    #turtle-canvas-box canvas {
-      display: block !important;
-      position: absolute !important;
-      top: 0 !important;
-      left: 0 !important;
-    }
+    /* NO canvas overrides — let Skulpt do its own stacking */
 
-    /* Code panel */
-    .code-modal {
+    .code-box {
       display: none; width: 100%; margin-top: 14px;
-      background: #0f172a; border: 1px solid var(--card-border);
-      border-radius: 14px; padding: 16px;
-      max-height: 380px; overflow-y: auto;
+      background: #0f172a; border: 1px solid var(--border);
+      border-radius: 12px; padding: 16px;
+      max-height: 360px; overflow-y: auto;
     }
-    .code-modal pre { font-family: "JetBrains Mono", monospace; font-size: 0.79rem; color: #cbd5e1; line-height: 1.55; white-space: pre-wrap; }
+    .code-box pre { font-family: "JetBrains Mono",monospace; font-size: .78rem; color: #cbd5e1; line-height: 1.55; white-space: pre-wrap; }
 
-    footer { margin-top: 28px; text-align: center; color: var(--text-muted); font-size: 0.85rem; }
-    footer a { color: var(--accent-yellow); text-decoration: none; font-weight: 600; }
+    footer { margin-top: 28px; text-align: center; color: var(--muted); font-size: .85rem; }
+    footer a { color: var(--yellow); text-decoration: none; font-weight: 600; }
     footer a:hover { text-decoration: underline; }
   </style>
 </head>
@@ -131,38 +117,38 @@
 <header>
   <div class="badge">⚡ Interactive Python Live Demo</div>
   <h1>Pikachu in Python</h1>
-  <p class="subtitle">Watch Python Turtle draw Pikachu stroke-by-stroke in your browser!</p>
+  <p class="sub">Watch Python Turtle draw Pikachu stroke-by-stroke in your browser!</p>
 </header>
 
-<div class="container">
-  <div class="controls-card">
-    <div class="status-group">
+<div class="wrap">
+  <div class="ctrl">
+    <div class="status">
       <div class="dot" id="dot"></div>
-      <span class="status-text" id="status-label">Drawing Pikachu...</span>
+      <span class="stxt" id="slabel">Drawing Pikachu...</span>
     </div>
-    <div class="btn-group">
-      <button id="btn-replay" class="primary">🔄 Replay</button>
-      <button id="btn-speed">⚡ Fast Mode</button>
-      <button id="btn-code">📜 View Code</button>
-      <button id="btn-save">💾 Save PNG</button>
+    <div class="btns">
+      <button class="pri" id="bReplay">🔄 Replay</button>
+      <button id="bSpeed">⚡ Fast Mode</button>
+      <button id="bCode">📜 View Code</button>
+      <button id="bSave">💾 Save PNG</button>
     </div>
   </div>
 
-  <div class="canvas-card" id="canvas-card">
-    <!-- turtle-canvas-box is positioned relative so canvas layers stack -->
-    <div id="turtle-canvas-box" style="position:relative;"></div>
+  <div class="card" id="card">
+    <!-- scaler contains the native-size turtle target -->
+    <div id="scaler">
+      <div id="tbox"></div>
+    </div>
   </div>
 
-  <div class="code-modal" id="code-modal">
-    <pre><code id="code-content"></code></pre>
+  <div class="code-box" id="codebox">
+    <pre><code id="codetxt"></code></pre>
   </div>
 </div>
 
-<footer>
-  Made with Python Turtle &bull; Powered by <a href="https://skulpt.org" target="_blank" rel="noopener">Skulpt</a> &bull; GitHub Pages
-</footer>
+<footer>Made with Python Turtle &bull; Powered by <a href="https://skulpt.org" target="_blank" rel="noopener">Skulpt</a> &bull; GitHub Pages</footer>
 
-<script type="text/python" id="py-src">
+<script type="text/python" id="pysrc">
 import turtle
 
 
@@ -709,104 +695,95 @@ def main():
 if __name__ == '__main__':
     main()
 </script>
-
 <script>
-  const NATIVE_W = 1140;
-  const NATIVE_H = 720;
+const CW = 1120, CH = 700;
+let fast = false;
+const src = document.getElementById("pysrc").textContent;
+document.getElementById("codetxt").textContent = src.trim();
 
-  let isFast = false;
-  const src = document.getElementById("py-src").textContent;
-  document.getElementById("code-content").textContent = src.trim();
+function scale() {
+  const card    = document.getElementById("card");
+  const scaler  = document.getElementById("scaler");
+  const avail   = card.clientWidth;
+  const s       = Math.min(1, avail / CW);
+  // Set scaler to native size so card knows the content size
+  scaler.style.width  = CW + "px";
+  scaler.style.height = CH + "px";
+  scaler.style.transform = "scale(" + s + ")";
+  scaler.style.transformOrigin = "top left";
+  // Shrink card height to match scaled content
+  card.style.height = Math.round(CH * s) + "px";
+}
+window.addEventListener("resize", scale);
 
-  /* ── Scale canvas to fit the card ── */
-  function scaleBox() {
-    const card = document.getElementById("canvas-card");
-    const box  = document.getElementById("turtle-canvas-box");
-    const avail = card.clientWidth;
-    const scale = Math.min(1, avail / NATIVE_W);
-    box.style.transform = "scale(" + scale + ")";
-    box.style.transformOrigin = "top left";
-    card.style.height = Math.round(NATIVE_H * scale) + "px";
-  }
-  window.addEventListener("resize", scaleBox);
-  scaleBox();
+function draw() {
+  // Clear previous render
+  document.getElementById("tbox").innerHTML = "";
 
-  /* ── Skulpt helpers ── */
-  function outf(t) { console.log(t); }
-  function builtinRead(x) {
-    if (!Sk.builtinFiles || !Sk.builtinFiles["files"][x])
-      throw "File not found: '" + x + "'";
+  const dot   = document.getElementById("dot");
+  const lbl   = document.getElementById("slabel");
+  dot.classList.remove("done");
+  lbl.textContent = fast ? "Drawing (⚡ Fast)..." : "Drawing Pikachu...";
+
+  let code = src;
+  if (fast) code = code.replace(/t\.speed\(\d+\)/g, "t.speed(0)");
+
+  Sk.configure({ output: t => console.log(t), read: x => {
+    if (!Sk.builtinFiles?.["files"]?.[x]) throw "File not found: " + x;
     return Sk.builtinFiles["files"][x];
-  }
+  }});
 
-  /* ── Run drawing ── */
-  function run() {
-    document.getElementById("turtle-canvas-box").innerHTML = "";
-    const dot   = document.getElementById("dot");
-    const label = document.getElementById("status-label");
-    dot.classList.remove("done");
-    label.textContent = isFast ? "Drawing Pikachu (⚡ Fast)..." : "Drawing Pikachu...";
-
-    let code = src;
-    if (isFast) code = code.replace(/t\.speed\(\d+\)/g, "t.speed(0)");
-
-    Sk.configure({ output: outf, read: builtinRead });
-    Sk.TurtleGraphics = {
-      target: "turtle-canvas-box",
-      width:  NATIVE_W,
-      height: NATIVE_H,
-      animate: true
-    };
-
-    Sk.misceval.asyncToPromise(() =>
-      Sk.importMainWithBody("<stdin>", false, code, true)
-    ).then(() => {
-      dot.classList.add("done");
-      label.textContent = "Drawing Complete! 🎉";
-      scaleBox();
-    }).catch(err => {
-      console.error(err);
-      label.textContent = "Done";
-      scaleBox();
-    });
-
-    setTimeout(scaleBox, 100);
-  }
-
-  /* ── Buttons ── */
-  document.getElementById("btn-replay").onclick = run;
-
-  document.getElementById("btn-speed").onclick = function() {
-    isFast = !isFast;
-    this.textContent = isFast ? "🐢 Normal Speed" : "⚡ Fast Mode";
-    run();
+  Sk.TurtleGraphics = {
+    target:  "tbox",
+    width:   CW,
+    height:  CH,
+    animate: true
   };
 
-  document.getElementById("btn-code").onclick = function() {
-    const m = document.getElementById("code-modal");
-    const open = m.style.display === "block";
-    m.style.display = open ? "none" : "block";
-    this.textContent = open ? "📜 View Code" : "❌ Hide Code";
-  };
+  Sk.misceval.asyncToPromise(() =>
+    Sk.importMainWithBody("<stdin>", false, code, true)
+  ).then(() => {
+    dot.classList.add("done");
+    lbl.textContent = "Drawing Complete! 🎉";
+    scale();
+  }).catch(e => {
+    console.error(e);
+    lbl.textContent = "Done";
+    scale();
+  });
 
-  document.getElementById("btn-save").onclick = function() {
-    const canvases = [...document.querySelectorAll("#turtle-canvas-box canvas")]
-                       .filter(c => c.style.display !== "none");
-    if (!canvases.length) { alert("Still loading — try again in a moment."); return; }
-    const out = document.createElement("canvas");
-    out.width = NATIVE_W; out.height = NATIVE_H;
-    const ctx = out.getContext("2d");
-    ctx.fillStyle = "#fff";
-    ctx.fillRect(0, 0, NATIVE_W, NATIVE_H);
-    canvases.forEach(c => ctx.drawImage(c, 0, 0));
-    const a = document.createElement("a");
-    a.download = "pikachu-turtle.png";
-    a.href = out.toDataURL("image/png");
-    a.click();
-  };
+  setTimeout(scale, 80);
+}
 
-  /* ── Auto-start ── */
-  window.addEventListener("load", () => { run(); scaleBox(); });
+document.getElementById("bReplay").onclick = draw;
+document.getElementById("bSpeed").onclick = function() {
+  fast = !fast;
+  this.textContent = fast ? "🐢 Normal Speed" : "⚡ Fast Mode";
+  draw();
+};
+document.getElementById("bCode").onclick = function() {
+  const b = document.getElementById("codebox");
+  const open = b.style.display === "block";
+  b.style.display = open ? "none" : "block";
+  this.textContent = open ? "📜 View Code" : "❌ Hide Code";
+};
+document.getElementById("bSave").onclick = function() {
+  // Merge all visible Skulpt canvas layers into one export
+  const layers = [...document.querySelectorAll("#tbox canvas")]
+                   .filter(c => c.style.display !== "none");
+  if (!layers.length) { alert("Still drawing — wait a moment."); return; }
+  const out = document.createElement("canvas");
+  out.width = CW; out.height = CH;
+  const ctx = out.getContext("2d");
+  ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, CW, CH);
+  layers.forEach(c => ctx.drawImage(c, 0, 0));
+  const a = document.createElement("a");
+  a.download = "pikachu.png";
+  a.href = out.toDataURL("image/png");
+  a.click();
+};
+
+window.addEventListener("load", () => { scale(); draw(); });
 </script>
 </body>
 </html>
