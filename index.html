@@ -12,8 +12,8 @@
   <style>
     :root {
       --bg-dark: #090d16;
-      --card-bg: rgba(18, 24, 38, 0.88);
-      --card-border: rgba(255, 255, 255, 0.1);
+      --card-bg: rgba(18, 24, 38, 0.90);
+      --card-border: rgba(255, 255, 255, 0.12);
       --accent-yellow: #facc15;
       --accent-red: #ef4444;
       --accent-blue: #38bdf8;
@@ -29,11 +29,11 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 24px 16px;
+      padding: 20px 16px 40px;
     }
     header {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
     .badge {
       display: inline-flex;
@@ -42,31 +42,31 @@
       background: rgba(250, 204, 21, 0.12);
       color: var(--accent-yellow);
       border: 1px solid rgba(250, 204, 21, 0.35);
-      padding: 5px 14px;
+      padding: 5px 16px;
       border-radius: 999px;
       font-size: 0.82rem;
       font-weight: 700;
       letter-spacing: 0.5px;
       text-transform: uppercase;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
     h1 {
-      font-size: clamp(2rem, 5vw, 2.8rem);
+      font-size: clamp(2.2rem, 5vw, 3.2rem);
       font-weight: 800;
       background: linear-gradient(135deg, #fef08a 0%, #facc15 50%, #f97316 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       letter-spacing: -0.5px;
-      line-height: 1.2;
+      line-height: 1.15;
     }
     .subtitle {
       color: var(--text-muted);
-      font-size: 1rem;
+      font-size: 1.05rem;
       margin-top: 6px;
     }
     .container {
       width: 100%;
-      max-width: 860px;
+      max-width: 1050px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -123,7 +123,7 @@
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid var(--card-border);
       color: var(--text-main);
-      padding: 8px 15px;
+      padding: 8px 14px;
       border-radius: 10px;
       font-size: 0.88rem;
       font-weight: 600;
@@ -150,27 +150,39 @@
     }
     .canvas-wrapper {
       background: #ffffff;
-      border-radius: 18px;
-      overflow: hidden;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.15);
       width: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
       position: relative;
-      min-height: 600px;
+      overflow: hidden;
+      padding: 10px;
+      min-height: 870px;
+      transition: min-height 0.2s ease;
     }
-    #turtle-canvas-box {
-      width: 800px;
-      height: 600px;
+    .canvas-wrapper:fullscreen {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 0;
       display: flex;
       justify-content: center;
       align-items: center;
-      position: relative;
+    }
+    #turtle-canvas-box {
+      width: 900px;
+      height: 850px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transform-origin: center center;
+      transition: transform 0.15s ease-out;
     }
     #turtle-canvas-box canvas {
       display: block !important;
       background: #ffffff !important;
+      border-radius: 12px;
     }
     .code-modal {
       display: none;
@@ -179,8 +191,8 @@
       background: #0f172a;
       border: 1px solid var(--card-border);
       border-radius: 14px;
-      padding: 16px;
-      max-height: 380px;
+      padding: 18px;
+      max-height: 420px;
       overflow-y: auto;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
     }
@@ -192,7 +204,7 @@
       white-space: pre-wrap;
     }
     footer {
-      margin-top: 28px;
+      margin-top: 32px;
       text-align: center;
       color: var(--text-muted);
       font-size: 0.88rem;
@@ -203,30 +215,6 @@
       font-weight: 600;
     }
     footer a:hover { text-decoration: underline; }
-    @media (max-width: 840px) {
-      .canvas-wrapper {
-        min-height: 480px;
-      }
-      #turtle-canvas-box {
-        zoom: 0.75;
-      }
-    }
-    @media (max-width: 620px) {
-      .canvas-wrapper {
-        min-height: 380px;
-      }
-      #turtle-canvas-box {
-        zoom: 0.52;
-      }
-    }
-    @media (max-width: 440px) {
-      .canvas-wrapper {
-        min-height: 300px;
-      }
-      #turtle-canvas-box {
-        zoom: 0.40;
-      }
-    }
   </style>
 </head>
 <body>
@@ -245,12 +233,15 @@
       <div class="btn-group">
         <button id="btn-restart" class="primary">🔄 Replay</button>
         <button id="btn-speed">⚡ Fast Mode</button>
+        <button id="btn-zoom-in" title="Enlarge Window">🔍 Zoom +</button>
+        <button id="btn-zoom-out" title="Shrink Window">🔍 Zoom -</button>
+        <button id="btn-fullscreen" title="Fullscreen View">⛶ Fullscreen</button>
         <button id="btn-view-code">📜 View Code</button>
         <button id="btn-download">💾 Save PNG</button>
       </div>
     </div>
 
-    <div class="canvas-wrapper">
+    <div class="canvas-wrapper" id="canvas-wrapper">
       <div id="turtle-canvas-box"></div>
     </div>
 
@@ -267,6 +258,9 @@
 import turtle
 
 
+OFFSET_Y = -50
+
+
 def setup(x, y):
     turtle.setx(x)
     turtle.sety(y)
@@ -281,10 +275,13 @@ class Draw_Pikachu:
         t.pensize(3)
         t.speed(9)
         t.ondrag(setup)
+        t.penup()
+        t.goto(0, OFFSET_Y)
+        t.pendown()
 
     def meme(self, x, y):
         self.t.penup()
-        self.t.goto(x, y)
+        self.t.goto(x, y + OFFSET_Y)
         self.t.pendown()
 
     def aankha1(self, x, y):
@@ -814,8 +811,31 @@ if __name__ == '__main__':
   <script>
     let isDrawing = false;
     let isFast = false;
+    let currentZoom = 1.0;
     const rawPythonCode = document.getElementById("pikachu-code").textContent;
     document.getElementById("code-content").textContent = rawPythonCode.trim();
+
+    function autoScaleCanvas() {
+      const wrapper = document.getElementById("canvas-wrapper");
+      const box = document.getElementById("turtle-canvas-box");
+      if (!wrapper || !box) return;
+
+      const availWidth = wrapper.clientWidth - 20;
+      const baseWidth = 900;
+      const baseHeight = 850;
+
+      let fitScale = 1.0;
+      if (availWidth < baseWidth) {
+        fitScale = availWidth / baseWidth;
+      }
+
+      const totalScale = fitScale * currentZoom;
+      box.style.transform = "scale(" + totalScale + ")";
+      wrapper.style.minHeight = Math.round(baseHeight * totalScale + 20) + "px";
+    }
+
+    window.addEventListener("resize", autoScaleCanvas);
+    document.addEventListener("fullscreenchange", autoScaleCanvas);
 
     function outf(text) {
       console.log(text);
@@ -841,7 +861,6 @@ if __name__ == '__main__':
       // Adjust speed if fast mode is active
       let codeToRun = rawPythonCode;
       if (isFast) {
-        // speed(0) is maximum speed in turtle
         codeToRun = codeToRun.replace(/t\.speed\(\d+\)/g, "t.speed(0)");
       }
 
@@ -852,8 +871,8 @@ if __name__ == '__main__':
 
       Sk.TurtleGraphics = {
         target: "turtle-canvas-box",
-        width: 800,
-        height: 600,
+        width: 900,
+        height: 850,
         animate: true
       };
 
@@ -863,11 +882,15 @@ if __name__ == '__main__':
         isDrawing = false;
         statusDot.classList.add("done");
         statusLabel.textContent = "Drawing Complete! 🎉";
+        autoScaleCanvas();
       }).catch(function(err) {
         console.error("Drawing error:", err);
         isDrawing = false;
         statusLabel.textContent = "Finished drawing";
+        autoScaleCanvas();
       });
+
+      setTimeout(autoScaleCanvas, 50);
     }
 
     document.getElementById("btn-restart").addEventListener("click", function() {
@@ -878,6 +901,31 @@ if __name__ == '__main__':
       isFast = !isFast;
       this.textContent = isFast ? "🐢 Normal Speed" : "⚡ Fast Mode";
       startDrawing();
+    });
+
+    document.getElementById("btn-zoom-in").addEventListener("click", function() {
+      currentZoom = Math.min(1.5, currentZoom + 0.1);
+      autoScaleCanvas();
+    });
+
+    document.getElementById("btn-zoom-out").addEventListener("click", function() {
+      currentZoom = Math.max(0.4, currentZoom - 0.1);
+      autoScaleCanvas();
+    });
+
+    document.getElementById("btn-fullscreen").addEventListener("click", function() {
+      const wrapper = document.getElementById("canvas-wrapper");
+      if (!document.fullscreenElement) {
+        if (wrapper.requestFullscreen) {
+          wrapper.requestFullscreen();
+        } else if (wrapper.webkitRequestFullscreen) {
+          wrapper.webkitRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
     });
 
     document.getElementById("btn-view-code").addEventListener("click", function() {
@@ -902,6 +950,7 @@ if __name__ == '__main__':
     // Start drawing automatically when the page is opened
     window.addEventListener("load", function() {
       startDrawing();
+      autoScaleCanvas();
     });
   </script>
 </body>

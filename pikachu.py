@@ -1,6 +1,9 @@
 import turtle
 
 
+OFFSET_Y = -50
+
+
 def setup(x, y):
     turtle.setx(x)
     turtle.sety(y)
@@ -15,10 +18,13 @@ class Draw_Pikachu:
         t.pensize(3)
         t.speed(9)
         t.ondrag(setup)
+        t.penup()
+        t.goto(0, OFFSET_Y)
+        t.pendown()
 
     def meme(self, x, y):
         self.t.penup()
-        self.t.goto(x, y)
+        self.t.goto(x, y + OFFSET_Y)
         self.t.pendown()
 
     def aankha1(self, x, y):
