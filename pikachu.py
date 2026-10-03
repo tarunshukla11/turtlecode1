@@ -1,10 +1,6 @@
 import turtle
 
 
-OFFSET_X = 96
-OFFSET_Y = -50
-
-
 def setup(x, y):
     turtle.setx(x)
     turtle.sety(y)
@@ -19,13 +15,10 @@ class Draw_Pikachu:
         t.pensize(3)
         t.speed(9)
         t.ondrag(setup)
-        t.penup()
-        t.goto(OFFSET_X, OFFSET_Y)
-        t.pendown()
 
     def meme(self, x, y):
         self.t.penup()
-        self.t.goto(x + OFFSET_X, y + OFFSET_Y)
+        self.t.goto(x, y)
         self.t.pendown()
 
     def aankha1(self, x, y):
@@ -539,7 +532,7 @@ class Draw_Pikachu:
 def main():
     print('Painting the Cartoon... ')
     try:
-        turtle.screensize(1000, 800)
+        turtle.screensize(800, 600)
     except (AttributeError, Exception):
         pass
     turtle.title('Cartoon')

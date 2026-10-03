@@ -51,7 +51,7 @@
       margin-bottom: 8px;
     }
     h1 {
-      font-size: clamp(2.2rem, 5vw, 3.2rem);
+      font-size: clamp(2.2rem, 5vw, 3rem);
       font-weight: 800;
       background: linear-gradient(135deg, #fef08a 0%, #facc15 50%, #f97316 100%);
       -webkit-background-clip: text;
@@ -66,7 +66,7 @@
     }
     .container {
       width: 100%;
-      max-width: 1080px;
+      max-width: 900px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -154,36 +154,27 @@
       border-radius: 20px;
       box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.15);
       width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      position: relative;
-      overflow: hidden;
-      margin: 0 auto;
-      height: 800px;
-      transition: height 0.2s ease;
-    }
-    .canvas-wrapper:fullscreen {
-      background: #ffffff;
-      padding: 0;
-      border-radius: 0;
+      height: 720px;
       display: flex;
       justify-content: center;
       align-items: center;
+      position: relative;
+      overflow: hidden;
+      margin: 0 auto;
     }
     #turtle-canvas-box {
-      width: 1000px;
+      width: 800px;
       height: 800px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       position: relative;
-      margin: 0 auto;
-      transform-origin: top center;
+      transform: translateY(45px);
+      transform-origin: center center;
       transition: transform 0.15s ease-out;
     }
     #turtle-canvas-box canvas {
       display: block !important;
-      position: absolute !important;
-      top: 0 !important;
-      left: 0 !important;
       background: transparent !important;
     }
     .code-modal {
@@ -235,9 +226,6 @@
       <div class="btn-group">
         <button id="btn-restart" class="primary">🔄 Replay</button>
         <button id="btn-speed">⚡ Fast Mode</button>
-        <button id="btn-zoom-in" title="Enlarge Window">🔍 Zoom +</button>
-        <button id="btn-zoom-out" title="Shrink Window">🔍 Zoom -</button>
-        <button id="btn-fullscreen" title="Fullscreen View">⛶ Fullscreen</button>
         <button id="btn-view-code">📜 View Code</button>
         <button id="btn-download">💾 Save PNG</button>
       </div>
@@ -260,10 +248,6 @@
 import turtle
 
 
-OFFSET_X = 96
-OFFSET_Y = -50
-
-
 def setup(x, y):
     turtle.setx(x)
     turtle.sety(y)
@@ -278,13 +262,10 @@ class Draw_Pikachu:
         t.pensize(3)
         t.speed(9)
         t.ondrag(setup)
-        t.penup()
-        t.goto(OFFSET_X, OFFSET_Y)
-        t.pendown()
 
     def meme(self, x, y):
         self.t.penup()
-        self.t.goto(x + OFFSET_X, y + OFFSET_Y)
+        self.t.goto(x, y)
         self.t.pendown()
 
     def aankha1(self, x, y):
@@ -798,7 +779,7 @@ class Draw_Pikachu:
 def main():
     print('Painting the Cartoon... ')
     try:
-        turtle.screensize(1000, 800)
+        turtle.screensize(800, 600)
     except (AttributeError, Exception):
         pass
     turtle.title('Cartoon')
@@ -814,7 +795,6 @@ if __name__ == '__main__':
   <script>
     let isDrawing = false;
     let isFast = false;
-    let currentZoom = 1.0;
     const rawPythonCode = document.getElementById("pikachu-code").textContent;
     document.getElementById("code-content").textContent = rawPythonCode.trim();
 
@@ -824,21 +804,17 @@ if __name__ == '__main__':
       if (!wrapper || !box) return;
 
       const availWidth = wrapper.clientWidth;
-      const baseWidth = 1000;
-      const baseHeight = 800;
+      const baseWidth = 800;
 
-      let fitScale = 1.0;
+      let scale = 1.0;
       if (availWidth < baseWidth) {
-        fitScale = availWidth / baseWidth;
+        scale = availWidth / baseWidth;
       }
-
-      const totalScale = fitScale * currentZoom;
-      box.style.transform = "scale(" + totalScale + ")";
-      wrapper.style.height = Math.round(baseHeight * totalScale) + "px";
+      box.style.transform = "translateY(45px) scale(" + scale + ")";
+      wrapper.style.height = Math.round(720 * scale) + "px";
     }
 
     window.addEventListener("resize", autoScaleCanvas);
-    document.addEventListener("fullscreenchange", autoScaleCanvas);
 
     function outf(text) {
       console.log(text);
@@ -874,7 +850,7 @@ if __name__ == '__main__':
 
       Sk.TurtleGraphics = {
         target: "turtle-canvas-box",
-        width: 1000,
+        width: 800,
         height: 800,
         animate: true
       };
@@ -906,31 +882,6 @@ if __name__ == '__main__':
       startDrawing();
     });
 
-    document.getElementById("btn-zoom-in").addEventListener("click", function() {
-      currentZoom = Math.min(1.6, currentZoom + 0.1);
-      autoScaleCanvas();
-    });
-
-    document.getElementById("btn-zoom-out").addEventListener("click", function() {
-      currentZoom = Math.max(0.4, currentZoom - 0.1);
-      autoScaleCanvas();
-    });
-
-    document.getElementById("btn-fullscreen").addEventListener("click", function() {
-      const wrapper = document.getElementById("canvas-wrapper");
-      if (!document.fullscreenElement) {
-        if (wrapper.requestFullscreen) {
-          wrapper.requestFullscreen();
-        } else if (wrapper.webkitRequestFullscreen) {
-          wrapper.webkitRequestFullscreen();
-        }
-      } else {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        }
-      }
-    });
-
     document.getElementById("btn-view-code").addEventListener("click", function() {
       const modal = document.getElementById("code-modal");
       const isVisible = modal.style.display === "block";
@@ -939,18 +890,17 @@ if __name__ == '__main__':
     });
 
     document.getElementById("btn-download").addEventListener("click", function() {
-      // Find all canvases inside turtle-canvas-box and combine them onto one export canvas
       const canvases = document.querySelectorAll("#turtle-canvas-box canvas");
       if (!canvases || canvases.length === 0) {
         alert("The canvas is still loading. Please wait a moment.");
         return;
       }
       const exportCanvas = document.createElement("canvas");
-      exportCanvas.width = 1000;
+      exportCanvas.width = 800;
       exportCanvas.height = 800;
       const ctx = exportCanvas.getContext("2d");
       ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, 1000, 800);
+      ctx.fillRect(0, 0, 800, 800);
       canvases.forEach(c => {
         if (c.style.display !== "none") {
           ctx.drawImage(c, 0, 0);
